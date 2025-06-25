@@ -1,1 +1,261 @@
-print("hello");
+-- ============================
+-- CREACIÓN DE TABLAS
+-- ============================
+
+-- Tabla de Roles
+CREATE TABLE Rol (
+    id_rol INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE,
+    descripcion TEXT
+);
+
+-- Tabla de Usuarios
+CREATE TABLE Usuario (
+    id_usuario INT PRIMARY KEY,
+    nombre_usuario VARCHAR(100) NOT NULL,
+    ubicacion_usuario VARCHAR(100) NOT NULL,
+    contraseña VARCHAR(100) NOT NULL,
+    correo VARCHAR(100) NOT NULL UNIQUE,
+    id_rol INT NOT NULL,
+    FOREIGN KEY (id_rol) REFERENCES Rol(id_rol)
+);
+
+-- Tabla de Categorías
+CREATE TABLE Categoria (
+    id_categoria INT PRIMARY KEY,
+    nombre_categoria VARCHAR(50) NOT NULL
+);
+
+-- Tabla de Videojuegos
+CREATE TABLE Videojuego (
+    id_videojuego INT PRIMARY KEY,
+    nombre_videojuego VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(200),
+    precio INT NOT NULL,
+    stock INT NOT NULL,
+    url_imagen VARCHAR(200),
+    id_categoria INT,
+    id_usuario INT,
+    FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria),
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- Tabla de Carritos
+CREATE TABLE Carrito (
+    id_carrito INT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado VARCHAR(20) DEFAULT 'activo',
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- Tabla de Detalles del Carrito
+CREATE TABLE Carrito_Detalle (
+    id_detalle INT PRIMARY KEY,
+    id_carrito INT NOT NULL,
+    id_videojuego INT NOT NULL,
+    cantidad INT NOT NULL,
+    precio_unitario INT NOT NULL,
+    FOREIGN KEY (id_carrito) REFERENCES Carrito(id_carrito),
+    FOREIGN KEY (id_videojuego) REFERENCES Videojuego(id_videojuego)
+);
+
+-- Tabla de Compras
+CREATE TABLE Compra (
+    id_compra INT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    medio_de_pago VARCHAR(50) NOT NULL,
+    precio_total INT NOT NULL,
+    boleta_factura VARCHAR(100),
+    fecha_compra DATE NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+-- Tabla de Detalles de Compra
+CREATE TABLE Compra_Detalle (
+    id_detalle_compra INT PRIMARY KEY,
+    id_compra INT NOT NULL,
+    id_videojuego INT NOT NULL,
+    cantidad INT NOT NULL,
+    precio_unitario INT NOT NULL,
+    FOREIGN KEY (id_compra) REFERENCES Compra(id_compra),
+    FOREIGN KEY (id_videojuego) REFERENCES Videojuego(id_videojuego)
+);
+
+-- Tabla de Valoraciones
+CREATE TABLE Valoracion (
+    id_valoracion INT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_videojuego INT NOT NULL,
+    estrellas INT NOT NULL CHECK (estrellas BETWEEN 1 AND 5),
+    comentario VARCHAR(100),
+    restricciones VARCHAR(100),
+    fecha_valoracion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    FOREIGN KEY (id_videojuego) REFERENCES Videojuego(id_videojuego),
+    UNIQUE (id_usuario, id_videojuego)
+);
+
+-- Tabla de Rankings
+CREATE TABLE Ranking (
+    id_ranking INT PRIMARY KEY,
+    tipo_de_ranking VARCHAR(50) NOT NULL,
+    id_videojuego INT NOT NULL,
+    puntuacion_promedio NUMERIC(3,1),
+    FOREIGN KEY (id_videojuego) REFERENCES Videojuego(id_videojuego)
+);
+
+-- Tabla de Lista de Deseos
+CREATE TABLE Lista_Deseos (
+    id_lista INT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_videojuego INT NOT NULL,
+    fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    FOREIGN KEY (id_videojuego) REFERENCES Videojuego(id_videojuego),
+    UNIQUE (id_usuario, id_videojuego)
+);
+
+-- ============================
+-- INSERTS DE DATOS INICIALES
+-- ============================
+
+-- Roles
+INSERT INTO Rol (id_rol, nombre, descripcion) VALUES 
+(1, 'administrador', 'Acceso completo al sistema'),
+(2, 'cliente', 'Usuarios que compran productos'),
+(3, 'jefe de tienda', 'Usuarios que publican y gestionan videojuegos');
+
+-- Usuarios
+INSERT INTO Usuario (id_usuario, nombre_usuario, ubicacion_usuario, contraseña, correo, id_rol) VALUES
+(1, 'Admin Principal', 'Chile', 'admin123', 'admin@tienda.com', 1),
+(2, 'Juan Pérez', 'Argentina', 'cliente123', 'juan@cliente.com', 2),
+(3, 'María Gómez', 'Perú', 'cliente456', 'maria@cliente.com', 2),
+(4, 'Carlos Méndez', 'México', 'passcarlos', 'carlos@cliente.com', 2),
+(5, 'Lucía Torres', 'Colombia', 'passlucia', 'lucia@cliente.com', 2),
+(6, 'Pedro Ruiz', 'Chile', 'passpedro', 'pedro@cliente.com', 2);
+
+-- Categorías
+INSERT INTO Categoria (id_categoria, nombre_categoria) VALUES
+(1, 'Acción'), (2, 'Aventura'), (3, 'RPG'), (4, 'Deportes'), (5, 'Estrategia');
+
+-- Videojuegos
+INSERT INTO Videojuego (id_videojuego, nombre_videojuego, descripcion, precio, stock, url_imagen, id_categoria, id_usuario) VALUES
+(1, 'FC 24', 'El mejor simulador de fútbol', 55900, 100, 'fc24.jpg', 4, 1),
+(2, 'The Legend of Zelda', 'Aventura épica en Hyrule', 69990, 50, 'zelda.jpg', 2, 1),
+(3, 'Elden Ring', 'RPG de mundo abierto', 45490, 75, 'eldenring.jpg', 3, 1),
+(4, 'God of War', 'Acción épica mitológica', 35000, 80, 'gow.jpg', 1, 1),
+(5, 'Hollow Knight', 'Metroidvania desafiante', 8300, 120, 'hollowknight.jpg', 2, 1),
+(6, 'Age of Empires IV', 'Estrategia en tiempo real', 19900, 60, 'aoe4.jpg', 5, 1);
+
+-- Carritos
+INSERT INTO Carrito (id_carrito, id_usuario, estado) VALUES
+(1, 2, 'activo'), (2, 3, 'activo'), (3, 4, 'activo'), (4, 5, 'activo'), (5, 6, 'activo');
+
+-- Carrito_Detalle
+INSERT INTO Carrito_Detalle (id_detalle, id_carrito, id_videojuego, cantidad, precio_unitario) VALUES
+(1, 1, 1, 1, 55900),	--FC 24
+(2, 1, 2, 1, 69990),	--Zelda
+(3, 2, 3, 2, 45490),	--Elden Ring
+(4, 3, 4, 1, 35000),	--GOD of War
+(5, 4, 5, 1, 8300), 	--Hollow Knihgt
+(6, 5, 6, 2, 19900);	--Age of Empires IV
+
+-- Compras
+INSERT INTO Compra (id_compra, id_usuario, medio_de_pago, precio_total, boleta_factura, fecha_compra) VALUES
+(1, 2, 'Tarjeta de crédito', 125790, 'B001-0001', '2023-06-15'),	-- 55900 + 69990
+(2, 3, 'PayPal', 90980, 'B001-0002', '2023-06-16'),					-- 2 x 45490
+(3, 4, 'Débito', 35000, 'B001-0003', '2023-07-01'),					-- 1 x 35000
+(4, 5, 'Tarjeta de crédito', 8300, 'B001-0004', '2023-07-02'),		-- 1 x 8300
+(5, 6, 'PayPal', 39800, 'B001-0005', '2023-07-03');					-- 2 x 19900
+
+-- Compra_Detalle
+INSERT INTO Compra_Detalle (id_detalle_compra, id_compra, id_videojuego, cantidad, precio_unitario) VALUES
+(1, 1, 1, 1, 55900),	--FC 24
+(2, 1, 2, 1, 69990),	--Zelda
+(3, 2, 3, 2, 45490),	--Elden Ring
+(4, 3, 4, 1, 35000),	--GOD of War
+(5, 4, 5, 1, 8300), 	--Hollow Knihgt
+(6, 5, 6, 2, 19900);	--Age of Empires IV
+
+-- Valoraciones
+INSERT INTO Valoracion (id_valoracion, id_usuario, id_videojuego, estrellas, comentario) VALUES
+(1, 2, 1, 4, 'Muy bueno pero necesita más ligas'),
+(2, 3, 3, 5, 'Increíble juego, lo recomiendo'),
+(3, 4, 4, 5, 'Increíble historia y jugabilidad'),
+(4, 5, 5, 4, 'Muy entretenido, pero difícil'),
+(5, 6, 6, 5, 'Me encanta jugar en línea con amigos');
+
+-- Rankings
+INSERT INTO Ranking (id_ranking, tipo_de_ranking, id_videojuego, puntuacion_promedio) VALUES
+(1, 'Más vendidos', 1, 4.5),
+(2, 'Mejor valorados', 3, 5.0),
+(3, 'Novedades', 2, 4.0),
+(4, 'Más jugados', 4, 4.8),
+(5, 'Indies populares', 5, 4.2),
+(6, 'Clásicos de estrategia', 6, 4.7);
+
+-- Lista de deseos
+INSERT INTO Lista_Deseos (id_lista, id_usuario, id_videojuego) VALUES
+(1, 2, 3), (2, 3, 1), (3, 3, 2), (4, 4, 5), (5, 5, 1), (6, 6, 2), (7, 6, 3);
+
+CREATE VIEW ranking_mas_vendidos AS
+SELECT 
+    v.id_videojuego,
+    v.nombre_videojuego,
+    SUM(cd.cantidad) AS total_vendidos
+FROM 
+    compra_detalle cd
+JOIN 
+    videojuego v ON cd.id_videojuego = v.id_videojuego
+GROUP BY 
+    v.id_videojuego, v.nombre_videojuego
+ORDER BY 
+    total_vendidos DESC;
+
+CREATE VIEW ranking_mas_deseados AS
+SELECT v.id_videojuego, v.nombre_videojuego, COUNT(ld.id_lista) as total_deseado
+FROM videojuego v
+LEFT JOIN lista_deseos ld ON v.id_videojuego = ld.id_videojuego
+GROUP BY v.id_videojuego, v.nombre_videojuego
+ORDER BY total_deseado DESC;
+
+ALTER TABLE lista_deseos RENAME TO lista_deseados;
+
+-- ========================================
+-- TRIGGER: Validar stock antes de compra
+-- ========================================
+
+--Función que valida el stock
+CREATE OR REPLACE FUNCTION validar_stock()
+RETURNS TRIGGER AS $$
+DECLARE
+    stock_actual INT;
+BEGIN
+    -- Buscar el stock actual del videojuego que se quiere comprar
+    SELECT stock INTO stock_actual
+    FROM Videojuego
+    WHERE id_videojuego = NEW.id_videojuego;
+
+    -- Verificar si existe
+    IF stock_actual IS NULL THEN
+        RAISE EXCEPTION 'El videojuego con ID % no existe.', NEW.id_videojuego;
+    END IF;
+
+    -- Validar si hay stock suficiente
+    IF stock_actual < NEW.cantidad THEN
+        RAISE EXCEPTION 'No hay stock suficiente para el videojuego con ID % (stock actual: %, cantidad pedida: %)',
+            NEW.id_videojuego, stock_actual, NEW.cantidad;
+    END IF;
+
+    -- Si todo bien, continuar con el insert
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Crear el trigger que usa la función
+CREATE TRIGGER trigger_validar_stock
+BEFORE INSERT ON Compra_Detalle
+FOR EACH ROW
+EXECUTE FUNCTION validar_stock();
+
