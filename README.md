@@ -18,6 +18,8 @@ La base de dato tuvo una implementacion en SQL y se encuentra normalizada para e
 
 EQUIPO DE DESARROLLO
 
+Los distintos equipos utilzados para este proyecto fueron los siguientes:
+
   - Analizar de requerimiento: Interpretacion detallada de las funcionalidades solicitadas por la empresa DEBEDE.
   - Modelo entidad-relacion (MER): Se diseño el esquema conceptual con entidades, atributos y relaciones.
   - Modelo relacional (MR): El mer fue transformado a un modelo logico, definiendo las claves primarias y foraneas.
