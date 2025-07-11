@@ -598,7 +598,7 @@ VALUES (7, 6, 7, 11, 30000);
 --18
 
 INSERT INTO Videojuego (id_videojuego, nombre_videojuego, descripcion, precio, stock, url_imagen, id_categoria, id_usuario)
-VALUES (8, 'Minecraft', 'Juego sandbox', 30000, 0, 'minecraft.jpg', 3, 1);
+VALUES (8, 'Minecraft', 'Juego sandbox', 30000, 0, 'minecraft.jpg', 3, 7);
 
 INSERT INTO Carrito_Detalle (id_detalle, id_carrito, id_videojuego, cantidad, precio_unitario)
 VALUES (8, 6, 8, 1, 30000);
