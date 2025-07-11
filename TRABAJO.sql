@@ -1,6 +1,6 @@
 -- ============================
 -- CREACIÓN DE TABLAS
--- ============================
+-- ============================                           -INSERT: Jorge Saavedra y Samuel Venegas // TABLAS Y TRIGGER: Isaac Andrade y Francisco López  // TC: Todos los integrantes.
 
 -- Tabla de Roles
 CREATE TABLE Rol (
