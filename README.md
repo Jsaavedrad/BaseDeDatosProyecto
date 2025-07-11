@@ -1,5 +1,7 @@
 PROYECTO BASE DE DATOS - GameBot Solutions
 
+CONTEXTO
+
 Este proyecto tuvo el fin de diseñar e implementar una base de datos para una plataforma de ventas de videojuegos en linea, esta se encuentra orientada para las tiendas pequeñas las cuales no cuentan con los recuros para desarrollar su propio sistema. Esto surge por la necesidad detectada por la empresa DEBEDE, esta busca ofrecer un espacio donde las tiendas puedan subir, organizar y vender sus productos de manera mas accesible.
 
 INTRUCIONES DE USO
